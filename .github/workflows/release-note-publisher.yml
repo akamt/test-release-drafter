@@ -1,0 +1,21 @@
+name: Publish Draft Release Note
+on:
+  push:
+    branches:
+      - release
+jobs:
+  deploy:
+    name: Publish Release Note
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Draft Release Note Id
+        run: |
+          echo "DRAFT_RELEASE_ID=$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases | jq 'map(select(.draft == true)) | .[0].id')" >> $GITHUB_ENV
+      - name: Publish Release notes
+        run: |
+          curl \
+          -X PATCH \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/${{ env.DRAFT_RELEASE_ID }} \
+          -d '{"draft":false}'
