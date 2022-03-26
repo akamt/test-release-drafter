@@ -1,8 +1,8 @@
 name: Publish Draft Release Note
 on:
   push:
-#    branches:
-#      - release
+    branches:
+      - release
 jobs:
   deploy:
     name: Publish Release Note
