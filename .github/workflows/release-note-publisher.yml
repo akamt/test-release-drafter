@@ -11,15 +11,11 @@ jobs:
       - name: Get Draft Release Note Id
         run: |
           echo "DRAFT_RELEASE_ID=$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases | jq 'map(select(.draft == true)) | .[0].id')" >> $GITHUB_ENV
-      - name: test echo
+      - name: Publish Release notes
         run: |
-          echo "${{ env.DRAFT_RELEASE_ID }}"
-#      - name: Publish Release notes
-#        if: github.event_name == 'schedule'
-#        run: |
-#          curl \
-#          -X PATCH \
-#          -H "Accept: application/vnd.github.v3+json" \
-#          -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-#          https://api.github.com/repos/${{ github.repository }}/releases/${{ env.DRAFT_RELEASE_ID }} \
-#          -d '{"draft":false}'
+          curl \
+          -X PATCH \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/${{ env.DRAFT_RELEASE_ID }} \
+          -d '{"draft":false}'
